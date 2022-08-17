@@ -1,0 +1,34 @@
+﻿@using RealState.Models
+@model TesteModel
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+@{ 
+    TesteModel A = new TesteModel();
+
+}
+
+@using (Html.BeginForm("Login", "Teste", FormMethod.Post))
+{
+    <h4>Baby</h4>
+    <div class="form-horizontal">
+        <div class="form-group">
+            <label class="control-label col-sm-2">Name:</label>
+            @Html.TextBoxFor(m => A.Name, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2">Id:</label>
+            @Html.TextBoxFor(m => A.Id, new { @class = "form-control" })
+        </div>
+
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Submit" class="btn btn-default" />
+    </div>
+}

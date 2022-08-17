@@ -1,0 +1,40 @@
+﻿@using RealState.Models
+@model UserModel
+
+<h4>Detalhes do usuario</h4>
+
+@using (Html.BeginForm("AddUpdate", "User", FormMethod.Post))
+{
+    <div class="form-horizontal">
+        <div class="form-group">
+            <label class="control-label col-sm-2">Name:</label>
+            @Html.TextBoxFor(m => Model.Name, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2">Email:</label>
+            @Html.TextBoxFor(m => Model.Email, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2">Password:</label>
+            @Html.TextBoxFor(m => Model.Password, new { @class = "form-control phone" })
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2">CpfCnpj:</label>
+            @Html.TextBoxFor(m => Model.CpfCnpj, new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Salvar Alterações" class="btn btn-default" />
+    </div>
+}
+
+@Html.ActionLink("Add Property", "AddUpdate", "Property", new { UserId = Model.Id }, new { @class = "btn btn-default" })
+
+
+@{
+    Html.RenderAction("GetImagePartialView", "Property", new { Property = Model.PropertyList });
+}

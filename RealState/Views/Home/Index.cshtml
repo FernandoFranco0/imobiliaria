@@ -1,0 +1,22 @@
+﻿@using RealState.Models
+@model List<PropertyModel>
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <h1>Bem vindos</h1>
+    <p class="lead"></p>
+</div>
+
+@{
+    Html.RenderAction("GetSearchBarPartialView", "Search");
+}
+
+
+<p class="lead">Adicionados recentemente</p>
+
+@{
+    Html.RenderAction("GetImagePartialView", "Property" , new {Property = Model });
+}

@@ -1,0 +1,16 @@
+﻿@using RealState.Models
+@model List<PropertyModel>
+@{
+    ViewBag.Title = "Pesquisa";
+}
+
+<h2>Pesquisa</h2>
+
+
+@{
+    Html.RenderAction("GetSearchBarPartialView", "Search");
+}
+
+@{
+    Html.RenderAction("GetImagePartialView", "Property", new { Property = Model });
+}

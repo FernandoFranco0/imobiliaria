@@ -1,0 +1,37 @@
+﻿@model int?
+
+@{
+    ViewBag.Title = "Index";
+}
+
+
+
+<script type="text/javascript">
+    
+    $(document).ready(function () {
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("GetUserPartialView", "User" , new { @UserId = Model } )",
+        })
+        .done(function (response) {
+            debugger;
+            console.log("sucesso");
+            console.log(response);
+
+            $(".user-container").html(response);
+
+        })
+        .fail(function (error) {
+            debugger;
+            console.log("ocorreu erro");
+            console.log(error);
+        });
+    });
+
+</script>
+
+<h2>Index</h2>
+
+<div class="user-container">
+
+</div>

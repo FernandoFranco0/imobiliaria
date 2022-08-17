@@ -1,0 +1,24 @@
+﻿@using RealState.Models
+@model SearchModel
+
+
+@using (Html.BeginForm("Index", "Search", FormMethod.Get))
+{
+    <div class="form-inline">
+
+        <div class="form-group">
+            @Html.TextBoxFor(m => Model.State, new { @class = "form-control" , placeholder = "Estado" })
+            @Html.TextBoxFor(m => Model.City, new { @class = "form-control", placeholder = "Cidade" })
+            @Html.TextBoxFor(m => Model.NeighboorHood, new { @class = "form-control", placeholder = "Bairro" })
+            @Html.TextBoxFor(m => Model.StreetName, new { @class = "form-control", placeholder = "Rua" })
+            @Html.TextBoxFor(m => Model.Area, new { @class = "form-control", placeholder = "Area mínima" })
+            @Html.TextBoxFor(m => Model.Price, new { @class = "form-control", placeholder = "Preço máximo" })
+            @Html.TextBoxFor(m => Model.BedroomNumber, new { @class = "form-control", placeholder = "Numero de Quartos mínimo" })
+            @Html.TextBoxFor(m => Model.GarageSpace, new { @class = "form-control", placeholder = "Espaço na garagem mínimo" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Pesquisar" class="btn btn-default" />
+    </div>
+}

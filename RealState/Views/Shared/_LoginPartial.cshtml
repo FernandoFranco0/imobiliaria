@@ -1,0 +1,25 @@
+﻿@using Microsoft.AspNet.Identity
+@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+
+        <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Minha conta <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="/Account/MyInfo">Minhas Informações</a></li>
+                    <li><a href="#">Meu Favoritos</a></li>
+                    <li><a href="/Account/Logout">Log Out</a></li>
+                </ul>
+            </li>
+        </ul>
+    }
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li><a href="/Account/Register"><span class="glyphicon glyphicon-user"></span> Registrar</a></li>
+        <li><a href="/Account/Login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+    </ul>
+}

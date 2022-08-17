@@ -1,0 +1,32 @@
+﻿@using RealState.Models
+@model List<PropertyModel>
+
+<div class="row" style=" display: flex; flex-wrap: wrap;row-gap: 20px; ">
+    @foreach (var property in Model)
+    {
+        <div class="col-md-4">
+            <div class="thumbnail" style="background-color: white;">
+                <a href="@Url.Action("Index", "Property" , new { @PropertyId = property.Id } )">
+                    <img src="data:image/png;base64, @property.ImagesByteCode.First()" style=" max-height:20vh;" />
+                   
+                    <div class="caption">
+                        <div>
+                            <h5>@property.City , @property.State </h5>
+                            <span>@property.NeighboorHood, @property.StreetName , @property.HouseNumber</span>
+                        </div>
+                        <div style="width: 80%; display: flex; justify-content: space-between; ">
+                            <div><span> @property.Area m&#178;</span> </div>
+                            <div><span>@property.BedroomNumber quarto(s)</span> </div>
+                            <div><span>@property.GarageSpace carro(s)</span> </div>
+                        </div>
+                        <div>
+                            <span>R$ @property.Price</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    }
+
+</div>
+
