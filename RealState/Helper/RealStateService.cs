@@ -383,10 +383,10 @@ namespace RealState.Helper
                                 }).ToList();
                 }
 
-                foreach (var property in Response)
-                {
-                    property.ImagesByteCode = PropertyImages(property.Id);
-                }
+                //foreach (var property in Response)
+                //{
+                //    property.ImagesByteCode = PropertyImages(property.Id);
+                //}
 
                 return Response;
             }
