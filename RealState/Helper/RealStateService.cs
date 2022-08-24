@@ -49,7 +49,7 @@ namespace RealState.Helper
 
                     using (var Context = new RealStateEntities())
                     {
-                        var User = Context.User.FirstOrDefault(f => String.Equals(f.Email,UserEmail));
+                        var User = Context.User.FirstOrDefault(f => String.Equals(f.Email, UserEmail));
 
                         if (User == null)
                             throw new Exception("Ocorreu um erro ao requisitar os dados de usuário.");
@@ -228,11 +228,11 @@ namespace RealState.Helper
 
                 using (var Context = new RealStateEntities())
                 {
-                    var User = Context.User.FirstOrDefault(f => String.Equals(f.Email,UserLogin.Email));
+                    var User = Context.User.FirstOrDefault(f => String.Equals(f.Email, UserLogin.Email));
 
                     if (User == null)
                         return false;
-                    if (!String.Equals(User.Password , UserLogin.Password))
+                    if (!String.Equals(User.Password, UserLogin.Password))
                         return false;
 
                 }
@@ -377,11 +377,13 @@ namespace RealState.Helper
                                     Area = s.Area,
                                     UserId = s.UserId,
                                     Price = s.Price,
-                                    GarageSpace = s.GarageSpace
+                                    GarageSpace = s.GarageSpace,
+
+                                    ImagesByteCode = s.Image.Select(image => image.ByteCodeBase64).ToList()
                                 }).ToList();
                 }
 
-                foreach(var property in Response)
+                foreach (var property in Response)
                 {
                     property.ImagesByteCode = PropertyImages(property.Id);
                 }
@@ -457,7 +459,7 @@ namespace RealState.Helper
                                     Price = s.Price,
                                     GarageSpace = s.GarageSpace
                                 }).ToList();
-                                
+
                 }
                 foreach (var property in Response)
                 {
