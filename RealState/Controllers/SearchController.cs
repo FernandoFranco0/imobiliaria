@@ -25,7 +25,8 @@ namespace RealState.Controllers
 
             if (!String.IsNullOrEmpty(parameters.StreetName)) PropertyList = PropertyList.Where(s => s.StreetName == parameters.StreetName).ToList();
 
-            if (parameters.Area.HasValue) PropertyList = PropertyList.Where(s => s.Area == parameters.Area).ToList();
+
+            if (parameters.Area.HasValue) PropertyList = PropertyList.Where(s => s.Area >= parameters.Area).ToList();
 
             if (parameters.Price.HasValue) PropertyList = PropertyList.Where(s => s.Price <= parameters.Price).ToList();
 
