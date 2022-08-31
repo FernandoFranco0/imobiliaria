@@ -14,7 +14,7 @@ namespace RealState.Controllers
     {
         [HttpGet]
         [AllowAnonymous]
-        public ActionResult Login(string ReturnUrl )
+        public ActionResult Login(string ReturnUrl)
         {
             ViewBag.ReturnUrl = ReturnUrl;
             return View();
@@ -22,24 +22,23 @@ namespace RealState.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public ActionResult Login(UserModel ViewModel , string returnUrl)
+        public ActionResult Login(LoginModel ViewModel, string returnUrl)
         {
-            var Response = new RealStateService.User();
-            var LoginUser = Response.Get(ViewModel.Email);
+            var Response = new RealStateService.User().Login(ViewModel.Email, ViewModel.Password);
 
             // Sucesso
-            if (Response.Login(ViewModel))
+            if (Response.IsAuthenticated)
             {
                 ClaimsIdentity Identity = new ClaimsIdentity(
                 new[] {
                             // UserId
-                            new Claim(ClaimTypes.NameIdentifier, LoginUser.Id.ToString() , ClaimValueTypes.Integer),
+                            new Claim(ClaimTypes.NameIdentifier, Response.Id.ToString() , ClaimValueTypes.Integer),
                             // Email
-                            new Claim(ClaimTypes.Email, ViewModel.Email, ClaimValueTypes.Email),
+                            new Claim(ClaimTypes.Email, Response.Email, ClaimValueTypes.Email),
                             // Nome
-                            new Claim(ClaimTypes.Name, LoginUser.Name, ClaimValueTypes.String),
+                            new Claim(ClaimTypes.Name, Response.Name, ClaimValueTypes.String),
                             // Perfil de acesso
-                            new Claim(ClaimTypes.Role, LoginUser.Role.ToString())
+                            new Claim(ClaimTypes.Role, Response.RoleId.ToString())
                 }, DefaultAuthenticationTypes.ApplicationCookie);
 
                 var Context = Request.GetOwinContext();
@@ -53,10 +52,11 @@ namespace RealState.Controllers
             }
             else
             {
-                //ModelState.AddModelError(nameof(ViewModel.Password), "E-mail e/ou senha incorretos.");
+                ModelState.AddModelError("Password", "E-mail e/ou senha incorretos.");
             }
 
-            return RedirectToAction("Login", "Account" , new { returnUrl = returnUrl});
+            ViewBag.ReturnUrl = returnUrl;
+            return View(ViewModel);
         }
 
         public ActionResult Logout()
@@ -71,7 +71,7 @@ namespace RealState.Controllers
         [HttpGet]
         [AllowAnonymous]
         public ActionResult Register()
-        {         
+        {
             return View();
         }
 
@@ -80,10 +80,15 @@ namespace RealState.Controllers
         public ActionResult Register(UserModel User)
         {
             var OtherUser = new RealStateService.User();
-            OtherUser.Add(User);
 
-            var Response = new RealStateService.User();
-            var LoggedUser = Response.Get(User.Email);
+            var LoggedUser = OtherUser.Get(User.Email);
+            if (LoggedUser.Id != -1)
+            {
+                ModelState.AddModelError("Email", "E-mail já registrado");
+                return View(User);
+            }
+
+            OtherUser.Add(User);
 
             ClaimsIdentity Identity = new ClaimsIdentity(
                 new[] {
@@ -94,7 +99,7 @@ namespace RealState.Controllers
                             // Nome
                             new Claim(ClaimTypes.Name, User.Name, ClaimValueTypes.String),
                             // Perfil de acesso
-                            new Claim(ClaimTypes.Role, LoggedUser.Role.ToString())
+                            new Claim(ClaimTypes.Role, LoggedUser.RoleId.ToString())
                 }, DefaultAuthenticationTypes.ApplicationCookie);
 
             var Context = Request.GetOwinContext();
@@ -105,7 +110,7 @@ namespace RealState.Controllers
             AuthenticationManager.SignIn(Identity);
 
 
-            return RedirectToAction("Index" , "Home");
+            return RedirectToAction("Index", "Home");
         }
 
         [Authorize]
@@ -119,6 +124,20 @@ namespace RealState.Controllers
             var Userid = Int32.Parse(claims.First().Value);
 
             return View(UserService.Get(Userid));
+        }
+
+        [Authorize]
+        public ActionResult MyFavorites()
+        {
+            ClaimsIdentity identity = (ClaimsIdentity)User.Identity;
+            var claims = identity.Claims.ToList();
+            var Userid = Int32.Parse(claims[0].Value);
+
+            var FavoriteHelper = new RealStateService.Favorite();
+
+            var MyFavoritesList = FavoriteHelper.List(Userid);
+
+            return View(MyFavoritesList);
         }
 
         private string GetRedirectUrl(string ReturnUrl)

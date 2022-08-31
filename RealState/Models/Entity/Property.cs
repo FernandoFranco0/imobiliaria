@@ -17,6 +17,7 @@ namespace RealState.Models.Entity
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Property()
         {
+            this.Favorite = new HashSet<Favorite>();
             this.Image = new HashSet<Image>();
         }
     
@@ -32,6 +33,8 @@ namespace RealState.Models.Entity
         public int Price { get; set; }
         public int GarageSpace { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Favorite> Favorite { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Image> Image { get; set; }
         public virtual User User { get; set; }

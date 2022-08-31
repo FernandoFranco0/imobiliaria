@@ -5,10 +5,10 @@ using System.Web;
 
 namespace RealState.Models
 {
-    public class ImageModel
+    public class FavoriteModel
     {
         public int Id { get; set; }
+        public int UserId { get; set; }
         public int PropertyId { get; set; }
-        public string ImageUrl { get; set; }
     }
 }

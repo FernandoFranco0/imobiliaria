@@ -1,14 +1,22 @@
 ﻿@using RealState.Models
+@using System.Security.Claims;
 @model List<PropertyModel>
+
+
+
 
 <div class="row" style=" display: flex; flex-wrap: wrap;row-gap: 20px; ">
     @foreach (var property in Model)
     {
         <div class="col-md-4">
             <div class="thumbnail" style="background-color: white;">
+                    @{
+                        Html.RenderAction("ButtonPartialView", "Property", new { PropertyId = property.Id});
+                    }
+                
+
                 <a href="@Url.Action("Index", "Property" , new { @PropertyId = property.Id } )">
-                    <img src="data:image/png;base64, @property.ImagesByteCode.First()" style=" max-height:20vh;" />
-                   
+                    <img src="@property.ImagesUrl.First()" style=" max-height:20vh;" />
                     <div class="caption">
                         <div>
                             <h5>@property.City , @property.State </h5>

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using static RealState.Helper.RealStateService;
 
 namespace RealState.Helper
 {
@@ -29,8 +30,25 @@ namespace RealState.Helper
                         UserModel.Email = User.Email;
                         UserModel.Password = User.Password;
                         UserModel.CpfCnpj = User.CpfCnpj;
-                        UserModel.Role = User.Role;
-                        UserModel.PropertyList = UsersProperties(User.Id);
+                        UserModel.RoleId = User.RoleId;
+                        UserModel.PropertyList = User.Property.Select(Property => new PropertyModel
+                        {
+                            Id = Property.Id,
+                            BedroomNumber = Property.BedroomNumber,
+                            State = Property.State,
+                            City = Property.City,
+                            NeighboorHood = Property.NeighboorHood,
+                            StreetName = Property.StreetName,
+                            HouseNumber = Property.HouseNumber,
+                            Area = Property.Area,
+                            UserId = Property.UserId,
+                            Price = Property.Price,
+                            GarageSpace = Property.GarageSpace,
+                            ImagesUrl = Property.Image.Select(image => image.ImageUrl).ToList(),
+                            ImagesId = Property.Image.Select(image => image.Id).ToList()
+                        }).ToList();
+                        //UserModel.FavoritePropertyList = User.Favorite.Select(Favorite => Favorite.PropertyId).ToList();
+
                     }
                 }
                 catch (Exception Ex)
@@ -59,8 +77,24 @@ namespace RealState.Helper
                         UserModel.Email = User.Email;
                         UserModel.Password = User.Password;
                         UserModel.CpfCnpj = User.CpfCnpj;
-                        UserModel.Role = User.Role;
-                        UserModel.PropertyList = UsersProperties(User.Id);
+                        UserModel.RoleId = User.RoleId;
+                        UserModel.PropertyList = User.Property.Select(Property => new PropertyModel
+                        {
+                            Id = Property.Id,
+                            BedroomNumber = Property.BedroomNumber,
+                            State = Property.State,
+                            City = Property.City,
+                            NeighboorHood = Property.NeighboorHood,
+                            StreetName = Property.StreetName,
+                            HouseNumber = Property.HouseNumber,
+                            Area = Property.Area,
+                            UserId = Property.UserId,
+                            Price = Property.Price,
+                            GarageSpace = Property.GarageSpace,
+                            ImagesUrl = Property.Image.Select(image => image.ImageUrl).ToList(),
+                            ImagesId = Property.Image.Select(image => image.Id).ToList()
+                        }).ToList();
+                        //UserModel.PropertyList = UsersProperties(User.Id);
                     }
                 }
                 catch (Exception Ex)
@@ -118,7 +152,7 @@ namespace RealState.Helper
                             Email = Request.Email,
                             Password = Request.Password,
                             CpfCnpj = Request.CpfCnpj,
-                            Role = 2
+                            RoleId = 2
                         };
 
                         Context.User.Add(NewUser);
@@ -153,7 +187,7 @@ namespace RealState.Helper
                                     Email = s.Email,
                                     Password = s.Password,
                                     CpfCnpj = s.CpfCnpj,
-                                    Role = s.Role
+                                    RoleId = s.RoleId
                                 }).ToList();
                 }
 
@@ -173,6 +207,12 @@ namespace RealState.Helper
                         if (Entity == null)
                             throw new Exception("Ocorreu um erro ao editar os dados do bebe.");
 
+                        
+                        Context.Favorite.RemoveRange(Context.Favorite.Where(f => f.UserId == UserId));
+                        Context.Image.RemoveRange(Context.Image.Where(i => i.Property.UserId == UserId));
+                        Context.Property.RemoveRange(Context.Property.Where(p => p.UserId == UserId));
+                        
+
                         Context.User.Remove(Entity);
 
                         Context.SaveChanges();
@@ -189,55 +229,75 @@ namespace RealState.Helper
                 return Response;
             }
 
-            public List<PropertyModel> UsersProperties(int UserId)
-            {
-                var Response = new List<PropertyModel>();
-                var propertyHelper = new RealStateService.Property();
+            //public List<PropertyModel> UsersProperties(int UserId)
+            //{
+            //    var Response = new List<PropertyModel>();
+            //    var propertyHelper = new RealStateService.Property();
 
+            //    using (var Context = new RealStateEntities())
+            //    {
+            //        Response = Context
+            //                    .Property
+            //                    .Where(s => s.UserId == UserId)
+            //                    .Select(s => new PropertyModel
+            //                    {
+            //                        Id = s.Id,
+            //                        BedroomNumber = s.BedroomNumber,
+            //                        State = s.State,
+            //                        City = s.City,
+            //                        NeighboorHood = s.NeighboorHood,
+            //                        StreetName = s.StreetName,
+            //                        HouseNumber = s.HouseNumber,
+            //                        Area = s.Area,
+            //                        UserId = s.UserId,
+            //                        Price = s.Price,
+            //                        GarageSpace = s.GarageSpace,
+            //                        ImagesUrl = s.Image.Select(image => image.ImageUrl).ToList()
+            //                    }).ToList();
+            //    }
+
+
+            //    return Response;
+            //}
+
+            public LoginModel Login(string Email, string Password)
+            {
+                var Response = new LoginModel();
                 using (var Context = new RealStateEntities())
                 {
-                    Response = Context
-                                .Property
-                                .Where(s => s.UserId == UserId)
-                                .Select(s => new PropertyModel
-                                {
-                                    Id = s.Id,
-                                    BedroomNumber = s.BedroomNumber,
-                                    State = s.State,
-                                    City = s.City,
-                                    NeighboorHood = s.NeighboorHood,
-                                    StreetName = s.StreetName,
-                                    HouseNumber = s.HouseNumber,
-                                    Area = s.Area,
-                                    UserId = s.UserId,
-                                    Price = s.Price,
-                                    GarageSpace = s.GarageSpace
-                                }).ToList();
-                }
+                    var User = Context.User.FirstOrDefault(f => String.Equals(f.Email, Email));
 
-                foreach (var property in Response)
-                {
-                    property.ImagesByteCode = propertyHelper.PropertyImages(property.Id);
-                }
+                    //var User = Get(Email);
 
+                    if (User != null && User.Password == Password)
+                    {
+                        Response.Id = User.Id;
+                        Response.Name = User.Name;
+                        Response.Email = User.Email;
+                        Response.Password = User.Password;
+                        Response.CpfCnpj = User.CpfCnpj;
+                        Response.RoleId = User.RoleId;
+                        Response.PropertyList = User.Property.Select(Property => new PropertyModel
+                        {
+                            Id = Property.Id,
+                            BedroomNumber = Property.BedroomNumber,
+                            State = Property.State,
+                            City = Property.City,
+                            NeighboorHood = Property.NeighboorHood,
+                            StreetName = Property.StreetName,
+                            HouseNumber = Property.HouseNumber,
+                            Area = Property.Area,
+                            UserId = Property.UserId,
+                            Price = Property.Price,
+                            GarageSpace = Property.GarageSpace,
+                            ImagesUrl = Property.Image.Select(image => image.ImageUrl).ToList(),
+                            ImagesId = Property.Image.Select(image => image.Id).ToList()
+                        }).ToList();
+                        //Response.PropertyList = UsersProperties(User.Id);
+                        Response.IsAuthenticated = true;
+                    }
+                }
                 return Response;
-            }
-
-            public bool Login(UserModel UserLogin)
-            {
-
-                using (var Context = new RealStateEntities())
-                {
-                    var User = Context.User.FirstOrDefault(f => String.Equals(f.Email, UserLogin.Email));
-
-                    if (User == null)
-                        return false;
-                    if (!String.Equals(User.Password, UserLogin.Password))
-                        return false;
-
-                }
-
-                return true;
             }
         }
 
@@ -267,7 +327,9 @@ namespace RealState.Helper
                         PropertyModel.UserId = Property.UserId;
                         PropertyModel.Price = Property.Price;
                         PropertyModel.GarageSpace = Property.GarageSpace;
-                        PropertyModel.ImagesByteCode = PropertyImages(PropertyModel.Id);
+                        PropertyModel.ImagesUrl = Property.Image.Select(image => image.ImageUrl).ToList();
+                        PropertyModel.ImagesId = Property.Image.Select(image => image.Id).ToList();
+                        //PropertyModel.ImagesUrl = PropertyImages(PropertyModel.Id);
 
                     }
                 }
@@ -357,14 +419,41 @@ namespace RealState.Helper
                 return Response;
             }
 
-            public List<PropertyModel> List()
+            public List<PropertyModel> List(SearchModel parameters)
             {
                 var Response = new List<PropertyModel>();
 
                 using (var Context = new RealStateEntities())
                 {
-                    Response = Context
-                                .Property
+                    var Query = Context.Property.AsQueryable();
+
+                    if (!String.IsNullOrEmpty(parameters.State)) 
+                        Query = Query.Where(s => s.State == parameters.State);
+
+                    if (!String.IsNullOrEmpty(parameters.City))
+                        Query = Query.Where(s => s.City == parameters.City);
+
+                    if (!String.IsNullOrEmpty(parameters.NeighboorHood)) 
+                        Query = Query.Where(s => s.NeighboorHood == parameters.NeighboorHood);
+
+                    if (!String.IsNullOrEmpty(parameters.StreetName)) 
+                        Query = Query.Where(s => s.StreetName == parameters.StreetName);
+
+
+                    if (parameters.Area.HasValue) 
+                        Query = Query.Where(s => s.Area >= parameters.Area);
+
+                    if (parameters.Price.HasValue) 
+                        Query = Query.Where(s => s.Price <= parameters.Price);
+
+                    if (parameters.BedroomNumber.HasValue) 
+                        Query = Query.Where(s => s.BedroomNumber >= parameters.BedroomNumber);
+
+                    if (parameters.GarageSpace.HasValue) 
+                        Query = Query.Where(s => s.GarageSpace >= parameters.GarageSpace);
+
+
+                    Response = Query
                                 .Select(s => new PropertyModel
                                 {
                                     Id = s.Id,
@@ -379,14 +468,10 @@ namespace RealState.Helper
                                     Price = s.Price,
                                     GarageSpace = s.GarageSpace,
 
-                                    ImagesByteCode = s.Image.Select(image => image.ByteCodeBase64).ToList()
+                                    ImagesUrl = s.Image.Select(image => image.ImageUrl).ToList(),
+                                    ImagesId = s.Image.Select(image => image.Id).ToList()
                                 }).ToList();
                 }
-
-                //foreach (var property in Response)
-                //{
-                //    property.ImagesByteCode = PropertyImages(property.Id);
-                //}
 
                 return Response;
             }
@@ -404,6 +489,10 @@ namespace RealState.Helper
                         if (Entity == null)
                             throw new Exception("Ocorreu um erro ao editar os dados do bebe.");
 
+                        Context.Favorite.RemoveRange(Context.Favorite.Where(f => f.PropertyId == PropertyId));
+                        Context.Image.RemoveRange(Context.Image.Where(i => i.Property.Id == PropertyId));
+
+
                         Context.Property.Remove(Entity);
 
                         Context.SaveChanges();
@@ -420,20 +509,20 @@ namespace RealState.Helper
                 return Response;
             }
 
-            public List<string> PropertyImages(int PropertyId)
-            {
-                var Response = new List<string>();
+            //public List<string> PropertyImages(int PropertyId)
+            //{
+            //    var Response = new List<string>();
 
-                using (var Context = new RealStateEntities())
-                {
-                    Response = Context
-                                .Image
-                                .Where(s => s.PropertyId == PropertyId)
-                                .Select(s => s.ByteCodeBase64).ToList();
-                }
+            //    using (var Context = new RealStateEntities())
+            //    {
+            //        Response = Context
+            //                    .Image
+            //                    .Where(s => s.PropertyId == PropertyId)
+            //                    .Select(s => s.ImageUrl).ToList();
+            //    }
 
-                return Response;
-            }
+            //    return Response;
+            //}
 
             public List<PropertyModel> MostRecent(int amount)
             {
@@ -457,15 +546,11 @@ namespace RealState.Helper
                                     Area = s.Area,
                                     UserId = s.UserId,
                                     Price = s.Price,
-                                    GarageSpace = s.GarageSpace
+                                    GarageSpace = s.GarageSpace,
+                                    ImagesUrl = s.Image.Select(image => image.ImageUrl).ToList(),
                                 }).ToList();
-
                 }
-                foreach (var property in Response)
-                {
-                    property.ImagesByteCode = PropertyImages(property.Id);
-                }
-
+               
                 return Response;
             }
 
@@ -488,7 +573,7 @@ namespace RealState.Helper
 
                         ImageModel.Id = Image.Id;
                         ImageModel.PropertyId = Image.PropertyId;
-                        ImageModel.ByteCodeBase64 = Image.ByteCodeBase64;
+                        ImageModel.ImageUrl = Image.ImageUrl;
 
                     }
                 }
@@ -514,7 +599,7 @@ namespace RealState.Helper
                             throw new Exception("Ocorreu um erro ao editar os dados do bebe.");
 
                         Entity.PropertyId = Request.PropertyId;
-                        Entity.ByteCodeBase64 = Request.ByteCodeBase64;
+                        Entity.ImageUrl = Request.ImageUrl;
 
                         Response = true;
 
@@ -542,7 +627,7 @@ namespace RealState.Helper
                         var NewImage = new Models.Entity.Image
                         {
                             PropertyId = Request.PropertyId,
-                            ByteCodeBase64 = Request.ByteCodeBase64,
+                            ImageUrl = Request.ImageUrl,
                         };
 
                         Context.Image.Add(NewImage);
@@ -574,7 +659,7 @@ namespace RealState.Helper
                                 {
                                     Id = s.Id,
                                     PropertyId = s.PropertyId,
-                                    ByteCodeBase64 = s.ByteCodeBase64,
+                                    ImageUrl = s.ImageUrl,
                                 }).ToList();
                 }
 
@@ -608,6 +693,193 @@ namespace RealState.Helper
 
 
                 return Response;
+            }
+        }
+
+        public class Favorite
+        {
+            public FavoriteModel Get(int FavoriteId)
+            {
+                var FavoriteModel = new FavoriteModel();
+                try
+                {
+
+                    using (var Context = new RealStateEntities())
+                    {
+                        var Favorite = Context.Favorite.FirstOrDefault(f => f.Id == FavoriteId);
+
+                        if (Favorite == null)
+                            throw new Exception("Ocorreu um erro ao requisitar os dados de usuário.");
+
+                        FavoriteModel.Id = Favorite.Id;
+                        FavoriteModel.PropertyId = Favorite.PropertyId;
+                        FavoriteModel.UserId = Favorite.UserId;
+
+                    }
+                }
+                catch (Exception Ex)
+                {
+                    FavoriteModel.Id = -1;
+                }
+
+                return FavoriteModel;
+            }
+
+            public bool Update(FavoriteModel Request)
+            {
+                var Response = false;
+
+                try
+                {
+                    using (var Context = new RealStateEntities())
+                    {
+                        var Entity = Context.Favorite.FirstOrDefault(f => f.Id == Request.Id);
+
+                        if (Entity == null)
+                            throw new Exception("Ocorreu um erro ao editar os dados do bebe.");
+
+                        Entity.PropertyId = Request.PropertyId;
+                        Entity.UserId = Request.UserId;
+
+                        Response = true;
+
+                        Context.SaveChanges();
+                    }
+                }
+                catch (Exception Ex)
+                {
+                    Response = false;
+                }
+
+
+                return Response;
+            }
+
+            public bool Add(FavoriteModel Request)
+            {
+                var Response = false;
+
+                try
+                {
+                    using (var Context = new RealStateEntities())
+                    {
+
+                        var NewFavorite = new Models.Entity.Favorite
+                        {
+                            PropertyId = Request.PropertyId,
+                            UserId = Request.UserId,
+                        };
+
+                        Context.Favorite.Add(NewFavorite);
+
+                        Context.SaveChanges();
+
+                        Response = true;
+
+                    }
+                }
+                catch (Exception Ex)
+                {
+                    Response = false;
+                }
+
+
+                return Response;
+            }
+
+            public List<FavoriteModel> List()
+            {
+                var Response = new List<FavoriteModel>();
+
+                using (var Context = new RealStateEntities())
+                {
+                    Response = Context
+                                .Favorite
+                                .Select(s => new FavoriteModel
+                                {
+                                    Id = s.Id,
+                                    PropertyId = s.PropertyId,
+                                    UserId = s.UserId,
+                                }).ToList();
+                }
+
+                return Response;
+            }
+            public List<PropertyModel> List(int UserId)
+            {
+                var Response = new List<PropertyModel>();
+
+                using (var Context = new RealStateEntities())
+                {
+                   Response = Context.Favorite
+                                        .Where(Favorite => Favorite.UserId == UserId)
+                                        .Select(Favorite => Favorite.Property)
+                                        .Select(Property => new PropertyModel
+                                        {
+                                            Id = Property.Id,
+                                            BedroomNumber = Property.BedroomNumber,
+                                            State = Property.State,
+                                            City = Property.City,
+                                            NeighboorHood = Property.NeighboorHood,
+                                            StreetName = Property.StreetName,
+                                            HouseNumber = Property.HouseNumber,
+                                            Area = Property.Area,
+                                            UserId = Property.UserId,
+                                            Price = Property.Price,
+                                            GarageSpace = Property.GarageSpace,
+
+                                            ImagesUrl = Property.Image.Select(image => image.ImageUrl).ToList(),
+                                            ImagesId = Property.Image.Select(image => image.Id).ToList()
+                                        }).ToList();
+                }
+
+                return Response;
+            }
+
+            public bool Remove(int FavoriteId)
+            {
+                var Response = false;
+
+                try
+                {
+                    using (var Context = new RealStateEntities())
+                    {
+                        var Entity = Context.Favorite.FirstOrDefault(f => f.Id == FavoriteId);
+
+                        if (Entity == null)
+                            throw new Exception("Ocorreu um erro ao editar os dados do bebe.");
+
+                        Context.Favorite.Remove(Entity);
+
+                        Context.SaveChanges();
+
+                        Response = true;
+                    }
+                }
+                catch (Exception Ex)
+                {
+                    Response = false;
+                }
+
+
+                return Response;
+            }
+
+            public FavoriteModel IsFavorite(int UserId , int PropertyId)
+            {
+                var FavoriteModel = new FavoriteModel();
+                using ( var Context = new RealStateEntities() )
+                {
+
+                    var Favorite = Context.Favorite.FirstOrDefault(f => f.UserId == UserId && f.PropertyId == PropertyId);
+                    if (Favorite == null)
+                        return null;
+
+                    FavoriteModel.Id = Favorite.Id;
+                    FavoriteModel.PropertyId = Favorite.PropertyId;
+                    FavoriteModel.UserId = Favorite.UserId;
+                }
+                return FavoriteModel;
             }
         }
 

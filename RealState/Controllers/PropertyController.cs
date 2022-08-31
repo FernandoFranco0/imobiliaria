@@ -3,6 +3,7 @@ using RealState.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Web;
 using System.Web.Mvc;
 
@@ -14,62 +15,74 @@ namespace RealState.Controllers
         [AllowAnonymous]
         public ActionResult Index(int PropertyId)
         {
-            var Property = new RealStateService.Property();
+            var Property = new RealStateService.Property().Get(PropertyId);
+            ClaimsIdentity identity = (ClaimsIdentity)User.Identity;
+            var claims = identity.Claims.ToList();
 
-            return View(Property.Get(PropertyId));
+            if (Request.IsAuthenticated && (String.Equals(claims[0].Value, Property.UserId.ToString()) || String.Equals(claims[3].Value, "1")))
+            {
+                return View("EditableProperty", Property);
+            }
+
+            return View("ReadOnlyProperty", Property);
         }
 
         [Authorize]
         [HttpGet]
-        public ActionResult AddUpdate(int? id , int UserId)
+        public ActionResult AddUpdate(int? id, int UserId)
         {
             var Property = new RealStateService.Property();
-
-            if (id.HasValue) return View(Property.Get((int)id));
-
             var NewProperty = new PropertyModel();
-            NewProperty.UserId = UserId;
 
-            return View(NewProperty);
+            ClaimsIdentity identity = (ClaimsIdentity)User.Identity;
+            var claims = identity.Claims.ToList();
+
+            if (String.Equals(claims[3].Value, "1") || String.Equals(claims[0].Value, UserId.ToString()) )
+            {
+                if (id.HasValue) return View(Property.Get((int)id));
+
+                NewProperty.UserId = UserId;
+                return View(NewProperty);
+            }
+
+            return RedirectToAction("Index", "Home");
         }
 
         [Authorize]
         [HttpPost]
-        public ActionResult Add(PropertyModel Property , List<HttpPostedFileBase> Photos)
+        public ActionResult Add(PropertyModel Property)
         {
             var NewProperty = new RealStateService.Property();
 
-            if(Photos.Count < 1)
+            if (String.IsNullOrEmpty(Property.ImagesUrl[0]))
             {
-                // logica do erro
+                ModelState.AddModelError("ImagesUrl", "Envie pelo menos uma foto");
+                return View("AddUpdate", Property);
             }
 
             int propertyId = NewProperty.Add(Property);
 
-            if(propertyId == -1)
-            {
-                //logica do erro
-            }
 
             var Image = new RealStateService.Image();
 
             var NewImage = new ImageModel();
             NewImage.PropertyId = propertyId;
 
-            foreach (var photo in Photos)
+            foreach (var photo in Property.ImagesUrl)
             {
-                byte[] photoBytes = new byte[photo.ContentLength];
-                photo.InputStream.Read(photoBytes, 0, photo.ContentLength);
-                NewImage.ByteCodeBase64 = Convert.ToBase64String(photoBytes);
+                NewImage.ImageUrl = photo;
                 Image.Add(NewImage);
             }
-  
 
-            return RedirectToAction("Index" , "Home");
+
+            return RedirectToAction("Index", "Home");
         }
 
-        public ActionResult Update(PropertyModel Property , List<HttpPostedFileBase> Photos)
+        [HttpPost]
+        [Authorize]
+        public ActionResult Update(PropertyModel Property, List<HttpPostedFileBase> Photos)
         {
+
             var PropertyService = new RealStateService.Property();
             PropertyService.Update(Property);
 
@@ -80,30 +93,102 @@ namespace RealState.Controllers
 
             foreach (var photo in Photos)
             {
-                if(photo != null)
+                if (photo != null)
                 {
                     byte[] photoBytes = new byte[photo.ContentLength];
                     photo.InputStream.Read(photoBytes, 0, photo.ContentLength);
-                    NewImage.ByteCodeBase64 = Convert.ToBase64String(photoBytes);
+                    NewImage.ImageUrl = Convert.ToBase64String(photoBytes);
                     Image.Add(NewImage);
                 }
             }
 
-            return RedirectToAction("Index", "Property", new { @PropertyId = Property.Id });
+            return RedirectToAction("Index", "Property", new { @PropertyId = Property.Id });         
+
         }
 
 
         [Authorize]
-        public ActionResult Remove(int id)
+        public ActionResult Remove(int Propertyid)
         {
             var PropertyRemove = new RealStateService.Property();
-            PropertyRemove.Remove(id);
-            return RedirectToAction("Index");
+            PropertyRemove.Remove(Propertyid);
+            return RedirectToAction("Index" , "Home");
         }
 
         public PartialViewResult GetImagePartialView(List<PropertyModel> Property)
         {
             return PartialView("_Image", Property);
         }
+
+        public PartialViewResult ButtonPartialView(int PropertyId )
+        {
+            var Favorite = new RealStateService.Favorite();
+
+            var FavoriteViewModel = new FavoriteModel
+            {
+                PropertyId = PropertyId,
+            };
+
+            if (!Request.IsAuthenticated)
+                return PartialView("_NotFavoriteButton", FavoriteViewModel);
+
+
+            ClaimsIdentity identity = (ClaimsIdentity)User.Identity;
+            var claims = identity.Claims.ToList();
+            var UserId = Int32.Parse(claims[0].Value);
+
+            
+
+            var IsFavorite = Favorite.IsFavorite(UserId, PropertyId);
+
+            if (IsFavorite == null)
+                return PartialView("_NotFavoriteButton", FavoriteViewModel);
+
+            return PartialView("_IsFavoriteButton", FavoriteViewModel);
+            
+        }
+
+        [Authorize]
+        [HttpGet]
+        public PartialViewResult ChangeFavoriteButton(int PropertyId)
+        {
+
+            ClaimsIdentity identity = (ClaimsIdentity)User.Identity;
+            var claims = identity.Claims.ToList();
+            var UserId = Int32.Parse(claims[0].Value);
+
+            var FavoriteHelper = new RealStateService.Favorite();         
+            var IsFavorite = FavoriteHelper.IsFavorite(UserId, PropertyId);          
+            var Favorite = new FavoriteModel
+            {
+                PropertyId = PropertyId,
+                UserId = UserId
+            };
+
+            if (IsFavorite == null)
+            {
+                FavoriteHelper.Add(Favorite);
+                return PartialView("_IsFavoriteButton", Favorite);
+            }
+
+            FavoriteHelper.Remove(IsFavorite.Id);
+            return PartialView("_NotFavoriteButton" , Favorite);
+        }
+
+        [Authorize]
+        public ActionResult RemoveImage(int ImageId, int PropertyId)
+        {
+            var PropertyHelper = new RealStateService.Property();
+            var Property = PropertyHelper.Get(PropertyId);
+
+            if (Property.ImagesUrl.Count > 1)
+            {
+                var ImagageRemove = new RealStateService.Image();
+                ImagageRemove.Remove(ImageId);
+            }
+            
+            return RedirectToAction("Index", "Property" , new { PropertyId = PropertyId });
+        }
+
     }
 }

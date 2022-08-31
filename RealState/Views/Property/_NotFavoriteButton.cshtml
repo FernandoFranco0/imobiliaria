@@ -1,0 +1,31 @@
+﻿@using RealState.Models
+
+@model FavoriteModel
+
+
+<script type="text/javascript">
+    function Favorite(PropertyId) {
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("ChangeFavoriteButton", "Property")",
+            data: {
+                UserId: UserId,
+                PropertyId: PropertyId
+            }
+        })
+        .done(function (response) {
+            $(".button-container-" + PropertyId).html(response);
+            console.log("Sucesso");
+        })
+        .fail(function () {
+            console.log("ocorreu erro");
+        })
+    }
+</script>
+<div class="button-container-@Model.PropertyId">
+    <div style="position: absolute; top: 50%; left: 85%; ">
+        <button onclick="Favorite(@Model.PropertyId)">
+            <span class="glyphicon glyphicon-heart-empty" id="favoriteButton"></span>
+        </button>
+    </div>
+</div>

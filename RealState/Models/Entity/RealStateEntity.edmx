@@ -5,13 +5,21 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="RealStateModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Favorite">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="PropertyId" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="Image">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="PropertyId" Type="int" Nullable="false" />
-          <Property Name="ByteCodeBase64" Type="varchar(max)" Nullable="false" />
+          <Property Name="ImageUrl" Type="varchar" MaxLength="1000" Nullable="false" />
         </EntityType>
         <EntityType Name="Property">
           <Key>
@@ -29,6 +37,13 @@
           <Property Name="Price" Type="int" Nullable="false" />
           <Property Name="GarageSpace" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="Role">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Description" Type="varchar" MaxLength="30" Nullable="false" />
+        </EntityType>
         <EntityType Name="User">
           <Key>
             <PropertyRef Name="Id" />
@@ -38,8 +53,32 @@
           <Property Name="Email" Type="varchar" MaxLength="200" Nullable="false" />
           <Property Name="Password" Type="varchar" MaxLength="200" Nullable="false" />
           <Property Name="CpfCnpj" Type="int" Nullable="false" />
-          <Property Name="Role" Type="int" Nullable="false" />
+          <Property Name="RoleId" Type="int" Nullable="false" />
         </EntityType>
+        <Association Name="FK_Favorite_Property">
+          <End Role="Property" Type="Self.Property" Multiplicity="1" />
+          <End Role="Favorite" Type="Self.Favorite" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Property">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Favorite">
+              <PropertyRef Name="PropertyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Favorite_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Favorite" Type="Self.Favorite" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Favorite">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Image_Property">
           <End Role="Property" Type="Self.Property" Multiplicity="1" />
           <End Role="Image" Type="Self.Image" Multiplicity="*" />
@@ -64,10 +103,32 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_User_Role1">
+          <End Role="Role" Type="Self.Role" Multiplicity="1" />
+          <End Role="User" Type="Self.User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Role">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="RealStateModelStoreContainer">
+          <EntitySet Name="Favorite" EntityType="Self.Favorite" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Image" EntityType="Self.Image" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Property" EntityType="Self.Property" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Favorite_Property" Association="Self.FK_Favorite_Property">
+            <End Role="Property" EntitySet="Property" />
+            <End Role="Favorite" EntitySet="Favorite" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Favorite_User" Association="Self.FK_Favorite_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Favorite" EntitySet="Favorite" />
+          </AssociationSet>
           <AssociationSet Name="FK_Image_Property" Association="Self.FK_Image_Property">
             <End Role="Property" EntitySet="Property" />
             <End Role="Image" EntitySet="Image" />
@@ -76,15 +137,29 @@
             <End Role="User" EntitySet="User" />
             <End Role="Property" EntitySet="Property" />
           </AssociationSet>
+          <AssociationSet Name="FK_User_Role1" Association="Self.FK_User_Role1">
+            <End Role="Role" EntitySet="Role" />
+            <End Role="User" EntitySet="User" />
+          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="RealStateModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="RealStateEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Favorite" EntityType="RealStateModel.Favorite" />
           <EntitySet Name="Image" EntityType="RealStateModel.Image" />
           <EntitySet Name="Property" EntityType="RealStateModel.Property" />
+          <EntitySet Name="Role" EntityType="RealStateModel.Role" />
           <EntitySet Name="User" EntityType="RealStateModel.User" />
+          <AssociationSet Name="FK_Favorite_Property" Association="RealStateModel.FK_Favorite_Property">
+            <End Role="Property" EntitySet="Property" />
+            <End Role="Favorite" EntitySet="Favorite" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Favorite_User" Association="RealStateModel.FK_Favorite_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Favorite" EntitySet="Favorite" />
+          </AssociationSet>
           <AssociationSet Name="FK_Image_Property" Association="RealStateModel.FK_Image_Property">
             <End Role="Property" EntitySet="Property" />
             <End Role="Image" EntitySet="Image" />
@@ -93,14 +168,28 @@
             <End Role="User" EntitySet="User" />
             <End Role="Property" EntitySet="Property" />
           </AssociationSet>
+          <AssociationSet Name="FK_User_Role1" Association="RealStateModel.FK_User_Role1">
+            <End Role="Role" EntitySet="Role" />
+            <End Role="User" EntitySet="User" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="Favorite">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="PropertyId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Property" Relationship="RealStateModel.FK_Favorite_Property" FromRole="Favorite" ToRole="Property" />
+          <NavigationProperty Name="User" Relationship="RealStateModel.FK_Favorite_User" FromRole="Favorite" ToRole="User" />
+        </EntityType>
         <EntityType Name="Image">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="PropertyId" Type="Int32" Nullable="false" />
-          <Property Name="ByteCodeBase64" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ImageUrl" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Property" Relationship="RealStateModel.FK_Image_Property" FromRole="Image" ToRole="Property" />
         </EntityType>
         <EntityType Name="Property">
@@ -118,8 +207,17 @@
           <Property Name="UserId" Type="Int32" Nullable="false" />
           <Property Name="Price" Type="Int32" Nullable="false" />
           <Property Name="GarageSpace" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Favorite" Relationship="RealStateModel.FK_Favorite_Property" FromRole="Property" ToRole="Favorite" />
           <NavigationProperty Name="Image" Relationship="RealStateModel.FK_Image_Property" FromRole="Property" ToRole="Image" />
           <NavigationProperty Name="User" Relationship="RealStateModel.FK_Property_User" FromRole="Property" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Role">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Description" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="User" Relationship="RealStateModel.FK_User_Role1" FromRole="Role" ToRole="User" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -130,9 +228,35 @@
           <Property Name="Email" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
           <Property Name="Password" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
           <Property Name="CpfCnpj" Type="Int32" Nullable="false" />
-          <Property Name="Role" Type="Int32" Nullable="false" />
+          <Property Name="RoleId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Favorite" Relationship="RealStateModel.FK_Favorite_User" FromRole="User" ToRole="Favorite" />
           <NavigationProperty Name="Property" Relationship="RealStateModel.FK_Property_User" FromRole="User" ToRole="Property" />
+          <NavigationProperty Name="Role" Relationship="RealStateModel.FK_User_Role1" FromRole="User" ToRole="Role" />
         </EntityType>
+        <Association Name="FK_Favorite_Property">
+          <End Type="RealStateModel.Property" Role="Property" Multiplicity="1" />
+          <End Type="RealStateModel.Favorite" Role="Favorite" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Property">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Favorite">
+              <PropertyRef Name="PropertyId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Favorite_User">
+          <End Type="RealStateModel.User" Role="User" Multiplicity="1" />
+          <End Type="RealStateModel.Favorite" Role="Favorite" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Favorite">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Image_Property">
           <End Type="RealStateModel.Property" Role="Property" Multiplicity="1" />
           <End Type="RealStateModel.Image" Role="Image" Multiplicity="*" />
@@ -157,16 +281,37 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_User_Role1">
+          <End Type="RealStateModel.Role" Role="Role" Multiplicity="1" />
+          <End Type="RealStateModel.User" Role="User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Role">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="RealStateModelStoreContainer" CdmEntityContainer="RealStateEntities">
+          <EntitySetMapping Name="Favorite">
+            <EntityTypeMapping TypeName="RealStateModel.Favorite">
+              <MappingFragment StoreEntitySet="Favorite">
+                <ScalarProperty Name="PropertyId" ColumnName="PropertyId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Image">
             <EntityTypeMapping TypeName="RealStateModel.Image">
               <MappingFragment StoreEntitySet="Image">
-                <ScalarProperty Name="ByteCodeBase64" ColumnName="ByteCodeBase64" />
+                <ScalarProperty Name="ImageUrl" ColumnName="ImageUrl" />
                 <ScalarProperty Name="PropertyId" ColumnName="PropertyId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
@@ -189,10 +334,18 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Role">
+            <EntityTypeMapping TypeName="RealStateModel.Role">
+              <MappingFragment StoreEntitySet="Role">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="User">
             <EntityTypeMapping TypeName="RealStateModel.User">
               <MappingFragment StoreEntitySet="User">
-                <ScalarProperty Name="Role" ColumnName="Role" />
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
                 <ScalarProperty Name="CpfCnpj" ColumnName="CpfCnpj" />
                 <ScalarProperty Name="Password" ColumnName="Password" />
                 <ScalarProperty Name="Email" ColumnName="Email" />

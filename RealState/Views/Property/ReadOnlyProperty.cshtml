@@ -1,0 +1,72 @@
+﻿@using RealState.Models
+@using System.Security.Claims;
+@using RealState.Helper;
+@model PropertyModel
+
+
+@{
+    ViewBag.Title = "Index";
+
+    int Quantidade = 1;
+
+    var UserService = new RealStateService.User();
+    var Owner = UserService.Get(Model.UserId);
+}
+
+<h2>Index</h2>
+
+<script type="text/javascript">
+    $(function () {
+        $("#tabs").tabs();
+    });
+
+</script>
+
+
+<h2>Detalhes do Imovel</h2>
+
+
+<div id="tabs">
+    <div style="display: flex; justify-content: center; background-color: rgb(50,50,50); ">
+        @foreach (var Url in Model.ImagesUrl)
+        {
+            <div id="tabs-@Quantidade">
+                <img src="@Url" style="max-height:50vh; " />
+            </div>
+            Quantidade++;
+        }
+    </div>
+
+    @{ Quantidade = 1; }
+    <ul>
+        @foreach (var Url in Model.ImagesUrl)
+        {
+            <li>
+                <a href="#tabs-@Quantidade">
+                    <img src="@Url" class="thumbnail" style="max-height:10vh;" />
+                </a>
+            </li>
+            Quantidade++;
+        }
+    </ul>
+
+</div>
+
+<div>
+    <div>
+        <h3>@Model.City , @Model.State </h3>
+        <h3>@Model.NeighboorHood, @Model.StreetName , @Model.HouseNumber</h3>
+    </div>
+    <div style="width: 80%; display: flex; justify-content: space-between; ">
+        <div><h3> @Model.Area m&#178;</h3> </div>
+        <div><h3>@Model.BedroomNumber quarto(s)</h3> </div>
+        <div><h3>Espaço na garagem @Model.GarageSpace carro(s)</h3> </div>
+    </div>
+    <div>
+        <h3>R$ @Model.Price</h3>
+    </div>
+
+    <div>
+        <h3>Dono : @Owner.Name , Email para contato @Owner.Email</h3>
+    </div>
+</div>

@@ -1,7 +1,94 @@
-﻿
+﻿@using RealState.Models
+@using System.Security.Claims;
+@using RealState.Helper;
+@model PropertyModel
+
 @{
-    ViewBag.Title = "Teste";
+    ViewBag.Title = "Property";
+    int Quantidade = 1;
 }
 
-<h2>Teste</h2>
+<h2>Property</h2>
 
+<script type="text/javascript">
+    $(function () {
+        $("#tabs").tabs();
+    });
+
+    $(function () {
+        $("#menu").menu();
+    });
+
+    function searchCep() {
+        const cep = document.getElementById("cepInput").value
+
+        $.ajax({
+            type: "GET",
+            url: "https://viacep.com.br/ws/" + cep + "/json/",
+            data: {
+            }
+        })
+            .done(function (object) {
+                //alert("sucesso");
+                console.log("sucesso");
+
+                if (object.erro) {
+                    alert("não encontrado ou inexistente");
+                    console.log("ocorreu erro");
+                }
+                else {
+
+                    const State = document.getElementById("State");
+                    const City = document.getElementById("City");
+                    const NeighboorHood = document.getElementById("NeighboorHood");
+                    const StreetName = document.getElementById("StreetName");
+                    const HouseNumber = document.getElementById("HouseNumber");
+
+                    State.value = object.uf;
+                    City.value = object.localidade;
+                    NeighboorHood.value = object.bairro;
+                    StreetName.value = object.logradouro;
+
+                }
+            })
+            .fail(function (error) {
+                alert("não encontrado ou inexistente");
+                console.log("ocorreu erro");
+            });
+    }
+
+
+</script>
+
+
+<h2>Detalhes do Imovel</h2>
+
+        
+<div id="tabs">
+
+    <div style="display: flex; justify-content: center; background-color: rgb(50,50,50); ">
+        <ul id="menu" style="height: 30px; position:absolute; left:1%;">
+            <li>
+                <div class="glyphicon glyphicon-cog"></div>
+                <ul>
+                    <li>
+                        @Html.ActionLink("Apagar Foto", "RemoveImage", "Property", new { }, new { })
+                    </li>
+                </ul>
+            </li>
+        </ul>
+
+        <div id="tabs-1">
+            <img src="https://images.unsplash.com/photo-1453728013993-6d66e9c9123a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" style="max-height:50vh; " />
+        </div>
+
+    </div>
+
+    <ul>
+        <li>
+            <a href="#tabs-1">
+                <img src="https://images.unsplash.com/photo-1453728013993-6d66e9c9123a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" class="thumbnail" style="max-height:10vh;" />
+            </a>
+        </li>
+    </ul>
+</div>

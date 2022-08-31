@@ -11,9 +11,10 @@ namespace RealState.Controllers
 {
     public class TesteController : Controller
     {
-        [Authorize]
+
         public ActionResult Teste()
         {
+
             return View();
         }
 

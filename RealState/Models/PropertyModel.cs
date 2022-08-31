@@ -18,6 +18,7 @@ namespace RealState.Models
         public int UserId { get; set; }
         public int Price { get; set; }
         public int GarageSpace { get; set; }
-        public List<string> ImagesByteCode { get; set; }
+        public List<string> ImagesUrl { get; set; }
+        public List<int> ImagesId { get; set; }
     }
 }

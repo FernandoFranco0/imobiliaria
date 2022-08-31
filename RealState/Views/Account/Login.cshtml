@@ -1,5 +1,5 @@
 ﻿@using RealState.Models
-@model  UserModel
+@model  LoginModel
 
 @{
     ViewBag.Title = "Login";
@@ -9,17 +9,26 @@
 
 
 
-@using (Html.BeginForm("Login", "Account", new {returnUrl = ViewBag.ReturnUrl } , FormMethod.Post))
+@using (Html.BeginForm("Login", "Account", new { returnUrl = ViewBag.ReturnUrl }, FormMethod.Post))
 {
     <div class="form-horizontal">
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
         <div class="form-group">
             <label class="control-label col-sm-2">Email:</label>
-            @Html.TextBoxFor(m => Model.Email, new { @class = "form-control" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+            </div>
         </div>
 
         <div class="form-group">
             <label class="control-label col-sm-2">Senha:</label>
-            @Html.PasswordFor(m => Model.Password, new { @class = "form-control" })
+            <div class="col-md-10">
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+            </div>
         </div>
 
     </div>

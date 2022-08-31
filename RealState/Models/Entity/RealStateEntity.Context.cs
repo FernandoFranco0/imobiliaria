@@ -25,8 +25,10 @@ namespace RealState.Models.Entity
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<Favorite> Favorite { get; set; }
         public virtual DbSet<Image> Image { get; set; }
         public virtual DbSet<Property> Property { get; set; }
+        public virtual DbSet<Role> Role { get; set; }
         public virtual DbSet<User> User { get; set; }
     }
 }

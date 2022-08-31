@@ -1,6 +1,11 @@
 ﻿@using RealState.Models
 @model UserModel
 
+@{
+    ViewBag.Title = "Unico Usuario";
+}
+
+
 <h4>Detalhes do usuario</h4>
 
 @using (Html.BeginForm("AddUpdate", "User", FormMethod.Post))

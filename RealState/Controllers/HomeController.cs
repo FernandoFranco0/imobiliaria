@@ -14,8 +14,9 @@ namespace RealState.Controllers
         public ActionResult Index()
         {
             var property = new RealStateService.Property();
-            return View(property.MostRecent(3));
+            var propertyList = property.MostRecent(3);
 
+            return View(propertyList);
         }
     }
 }

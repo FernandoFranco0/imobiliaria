@@ -1,0 +1,181 @@
+﻿@using RealState.Models
+@using System.Security.Claims;
+@using RealState.Helper;
+@model PropertyModel
+
+@{
+    ViewBag.Title = "Property";
+    int Quantidade = 1;
+}
+
+<h2>Property</h2>
+
+<script type="text/javascript">
+    $(function () {
+        $("#tabs").tabs();
+    });
+
+    $(function () {
+        $("#menu").menu();
+    });
+
+    function searchCep() {
+        const cep = document.getElementById("cepInput").value
+
+        $.ajax({
+            type: "GET",
+            url: "https://viacep.com.br/ws/" + cep + "/json/",
+            data: {
+            }
+        })
+            .done(function (object) {
+                //alert("sucesso");
+                console.log("sucesso");
+
+                if (object.erro) {
+                    alert("não encontrado ou inexistente");
+                    console.log("ocorreu erro");
+                }
+                else {
+
+                    const State = document.getElementById("State");
+                    const City = document.getElementById("City");
+                    const NeighboorHood = document.getElementById("NeighboorHood");
+                    const StreetName = document.getElementById("StreetName");
+                    const HouseNumber = document.getElementById("HouseNumber");
+
+                    State.value = object.uf;
+                    City.value = object.localidade;
+                    NeighboorHood.value = object.bairro;
+                    StreetName.value = object.logradouro;
+
+                }
+            })
+            .fail(function (error) {
+                alert("não encontrado ou inexistente");
+                console.log("ocorreu erro");
+            });
+    }
+
+
+</script>
+
+
+<h2>Detalhes do Imovel</h2>
+@Html.ActionLink("Apagar Imovel", "Remove", "Property", new { PropertyId = Model.Id }, new { @class = "btn btn-danger" })
+
+<div id="tabs">
+    <div style="display: flex; justify-content: center; background-color: rgb(50,50,50); ">
+        @foreach (var Url in Model.ImagesUrl)
+        {
+            if (Model.ImagesUrl.Count > 1)
+            {
+                <ul id="menu" style="height: 30px; position:absolute;">
+                    <li>
+                        <div class="glyphicon glyphicon-cog"></div>
+                        <ul>
+                            <li>
+                                @Html.ActionLink("Apagar Foto", "RemoveImage", "Property", new { PropertyId = Model.Id, ImageId = Model.ImagesId[Quantidade - 1] }, new { })
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            }
+
+            <div id="tabs-@Quantidade">
+                <img src="@Url" style="max-height:50vh; " />
+            </div>
+            Quantidade++;
+        }
+    </div>
+
+    @{ Quantidade = 1; }
+    <ul>
+        @foreach (var Url in Model.ImagesUrl)
+        {
+            <li>
+                <a href="#tabs-@Quantidade">
+                    <img src="@Url" class="thumbnail" style="max-height:10vh;" />
+                </a>
+            </li>
+            Quantidade++;
+        }
+    </ul>
+
+</div>
+
+
+
+@using (Html.BeginForm("Update", "Property", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div class="form-horizontal">
+
+        <div class="form-group">
+            <label class="control-label col-sm-2">Buscar pelo CEP:</label>
+            <div class="col-sm-3" style="padding:0;">
+                <input type="text" class="form-control" id="cepInput" />
+            </div>
+            <button type="button" onclick="searchCep()" class="btn btn-default col-sm-1">Buscar</button>
+        </div>
+
+
+        <div class="form-group">
+            <label class="control-label col-sm-2">State:</label>
+            @Html.TextBoxFor(m => Model.State, new { @class = "form-control", @readonly = "readonly", id = "State" })
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2">City:</label>
+            @Html.TextBoxFor(m => Model.City, new { @class = "form-control", @readonly = "readonly", id = "City" })
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2">NeighboorHood:</label>
+            @Html.TextBoxFor(m => Model.NeighboorHood, new { @class = "form-control", @readonly = "readonly", id = "NeighboorHood" })
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2">StreetName:</label>
+            @Html.TextBoxFor(m => Model.StreetName, new { @class = "form-control phone", @readonly = "readonly", id = "StreetName" })
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2">HouseNumber:</label>
+            @Html.TextBoxFor(m => Model.HouseNumber, new { @class = "form-control", id = "HouseNumber" })
+        </div>
+
+
+        <div class="form-group">
+            <label class="control-label col-sm-2">BedroomNumber:</label>
+            @Html.TextBoxFor(m => Model.BedroomNumber, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2">Area:</label>
+            @Html.TextBoxFor(m => Model.Area, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2">Price:</label>
+            @Html.TextBoxFor(m => Model.Price, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2">GarageSpace:</label>
+            @Html.TextBoxFor(m => Model.GarageSpace, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-sm-2">Add Photo link:</label>
+            @Html.TextBoxFor(m => Model.ImagesUrl, new { @class = "form-control", Value = "" })
+        </div>
+
+        @Html.HiddenFor(m => Model.Id)
+        @Html.HiddenFor(m => Model.UserId)
+
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Atualizar" class="btn btn-default" />
+    </div>
+}

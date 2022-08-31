@@ -3,6 +3,7 @@ using RealState.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Web;
 using System.Web.Mvc;
 
@@ -14,20 +15,30 @@ namespace RealState.Controllers
         // GET: User
         public ActionResult Index(int? UserId)
         {
-            return View(UserId);
+            var UserService = new RealStateService.User();
+
+            ClaimsIdentity identity = (ClaimsIdentity)User.Identity;
+            var claims = identity.Claims.ToList();
+
+            if (String.Equals(claims[3].Value, "1"))
+            {
+                if (UserId.HasValue) return View("SingleUser", UserService.Get((int)UserId));
+
+                var ViewModel = UserService.List();
+                return View("User", ViewModel);
+            }
+
+            if (UserId.HasValue)
+            {
+                if (String.Equals(claims[0].Value, UserId.Value.ToString()))
+                {
+                    return View("SingleUser", UserService.Get((int)UserId));
+                }
+            }
+
+            return RedirectToAction("Index", "Home");
         }
 
-        [Authorize]
-        [HttpGet]
-        public PartialViewResult GetUserPartialView(int? Userid)
-        {
-            var User = new RealStateService.User();
-
-            if (Userid.HasValue) return PartialView("_SingleUser", User.Get((int)Userid));
-
-            var ViewModel = User.List();
-            return PartialView("_User", ViewModel);
-        }
 
         [Authorize]
         [HttpGet]
@@ -51,7 +62,7 @@ namespace RealState.Controllers
                 OtherUser.Add(User);
             }
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { UserId = User.Id });
         }
 
         [Authorize]

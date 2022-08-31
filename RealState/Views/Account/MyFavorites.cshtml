@@ -1,0 +1,12 @@
+﻿@using RealState.Models
+@model List<PropertyModel>
+
+@{
+    ViewBag.Title = "Meu favoritos";
+}
+
+<p class="lead">Meus favoritos</p>
+
+@{
+    Html.RenderAction("GetImagePartialView", "Property", new { Property = Model });
+}

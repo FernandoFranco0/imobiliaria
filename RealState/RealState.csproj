@@ -163,6 +163,9 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helper\RealStateService.cs" />
+    <Compile Include="Models\Entity\Favorite.cs">
+      <DependentUpon>RealStateEntity.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Entity\Image.cs">
       <DependentUpon>RealStateEntity.tt</DependentUpon>
     </Compile>
@@ -184,10 +187,15 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>RealStateEntity.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\Entity\Role.cs">
+      <DependentUpon>RealStateEntity.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Entity\User.cs">
       <DependentUpon>RealStateEntity.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\FavoriteModel.cs" />
     <Compile Include="Models\ImageModel.cs" />
+    <Compile Include="Models\LoginModel.cs" />
     <Compile Include="Models\PropertyModel.cs" />
     <Compile Include="Models\SearchModel.cs" />
     <Compile Include="Models\TesteModel.cs" />
@@ -248,10 +256,9 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\User\Index.cshtml" />
     <Content Include="Views\User\AddUpdate.cshtml" />
-    <Content Include="Views\User\_User.cshtml" />
-    <Content Include="Views\User\_SingleUser.cshtml" />
+    <Content Include="Views\User\User.cshtml" />
+    <Content Include="Views\User\SingleUser.cshtml" />
     <Content Include="Views\Property\Index.cshtml" />
-    <Content Include="Views\Property\_SingleProperty.cshtml" />
     <Content Include="Views\Property\AddUpdate.cshtml" />
     <Content Include="Views\Search\_SearchBar.cshtml" />
     <Content Include="Views\Search\Index.cshtml" />
@@ -262,6 +269,11 @@
     <Content Include="Views\Teste\Teste.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Account\MyInfo.cshtml" />
+    <Content Include="Views\Property\EditableProperty.cshtml" />
+    <Content Include="Views\Property\ReadOnlyProperty.cshtml" />
+    <Content Include="Views\Property\_IsFavoriteButton.cshtml" />
+    <Content Include="Views\Property\_NotFavoriteButton.cshtml" />
+    <Content Include="Views\Account\MyFavorites.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
