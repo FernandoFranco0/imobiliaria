@@ -68,20 +68,7 @@
     <div style="display: flex; justify-content: center; background-color: rgb(50,50,50); ">
         @foreach (var Url in Model.ImagesUrl)
         {
-            if (Model.ImagesUrl.Count > 1)
-            {
-                <ul id="menu" style="height: 30px; position:absolute;">
-                    <li>
-                        <div class="glyphicon glyphicon-cog"></div>
-                        <ul>
-                            <li>
-                                @Html.ActionLink("Apagar Foto", "RemoveImage", "Property", new { PropertyId = Model.Id, ImageId = Model.ImagesId[Quantidade - 1] }, new { })
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            }
-
+            
             <div id="tabs-@Quantidade">
                 <img src="@Url" style="max-height:50vh; " />
             </div>

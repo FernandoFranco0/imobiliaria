@@ -80,7 +80,7 @@ namespace RealState.Controllers
 
         [HttpPost]
         [Authorize]
-        public ActionResult Update(PropertyModel Property, List<HttpPostedFileBase> Photos)
+        public ActionResult Update(PropertyModel Property)
         {
 
             var PropertyService = new RealStateService.Property();
@@ -91,15 +91,10 @@ namespace RealState.Controllers
             var NewImage = new ImageModel();
             NewImage.PropertyId = Property.Id;
 
-            foreach (var photo in Photos)
+            foreach (var photo in Property.ImagesUrl)
             {
-                if (photo != null)
-                {
-                    byte[] photoBytes = new byte[photo.ContentLength];
-                    photo.InputStream.Read(photoBytes, 0, photo.ContentLength);
-                    NewImage.ImageUrl = Convert.ToBase64String(photoBytes);
-                    Image.Add(NewImage);
-                }
+                NewImage.ImageUrl = photo;
+                Image.Add(NewImage);
             }
 
             return RedirectToAction("Index", "Property", new { @PropertyId = Property.Id });         
