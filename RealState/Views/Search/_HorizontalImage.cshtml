@@ -4,7 +4,7 @@
 
 @*
 
-    Não funciona
+    Não funciona com 1 <a>
 
 
     <a href="@Url.Action("Index", "Property" , new { @PropertyId = property.Id } )">
@@ -32,6 +32,39 @@
             </div>
         </div>
     </a>
+
+
+    Esse Funciona com 2 <a>
+
+
+    <div class="col-md-12">
+            <div class="thumbnail" style="background-color: white;">
+                <div class="thumbnail-content">
+                    <a href="@Url.Action("Index", "Property" , new { @PropertyId = property.Id } )">
+                        @{
+                            Html.RenderAction("GetCarrouselPartialView", "Search", new { Property = property });
+                        }
+                    </a>
+                    <a href="@Url.Action("Index", "Property" , new { @PropertyId = property.Id } )">
+                        <div class="caption" style="width:20vw;">
+                            <div>
+                                <h3>@property.City , @property.State</h3>
+                                <h4>@property.NeighboorHood, @property.StreetName , @property.HouseNumber</h4>
+
+                                <div style="width:100%; display: flex; justify-content: space-between; ">
+                                    <span>@property.Area m&#178;</span>
+                                    <span>@property.BedroomNumber quarto(s)</span>
+                                    <span>@property.GarageSpace carro(s)</span>
+                                </div>
+
+                                <h4>R$ @property.Price</h4>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
 *@
 
 
@@ -47,7 +80,6 @@
                             Html.RenderAction("GetCarrouselPartialView", "Search", new { Property = property });
                         }
                     </a>
-                    @*pq usar 2 <a>*@
                     <a href="@Url.Action("Index", "Property" , new { @PropertyId = property.Id } )">
                         <div class="caption" style="width:20vw;">
                             <div>
