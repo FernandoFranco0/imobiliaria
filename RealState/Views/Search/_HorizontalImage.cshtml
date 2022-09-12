@@ -2,6 +2,39 @@
 @using System.Security.Claims;
 @model List<PropertyModel>
 
+@*
+
+    Não funciona
+
+
+    <a href="@Url.Action("Index", "Property" , new { @PropertyId = property.Id } )">
+        <div class="col-md-12">
+            <div class="thumbnail" style="background-color: white;">
+                <div class="thumbnail-content">
+                    @{
+                        Html.RenderAction("GetCarrouselPartialView", "Search", new { Property = property });
+                    }
+                    <div class="caption" style="width:20vw;">
+                        <div>
+                            <h3>@property.City , @property.State</h3>
+                            <h4>@property.NeighboorHood, @property.StreetName , @property.HouseNumber</h4>
+
+                            <div style="width:100%; display: flex; justify-content: space-between; ">
+                                <span>@property.Area m&#178;</span>
+                                <span>@property.BedroomNumber quarto(s)</span>
+                                <span>@property.GarageSpace carro(s)</span>
+                            </div>
+
+                            <h4>R$ @property.Price</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </a>
+*@
+
+
 
 <div style="display:flex; flex-direction:column ">
     @foreach (var property in Model)
@@ -38,33 +71,3 @@
 </div>
 
 
-@* 
-    Não funciona
-
-
-<a href="@Url.Action("Index", "Property" , new { @PropertyId = property.Id } )">
-    <div class="col-md-12">
-        <div class="thumbnail" style="background-color: white;">
-            <div class="thumbnail-content">
-                @{
-                    Html.RenderAction("GetCarrouselPartialView", "Search", new { Property = property });
-                }
-                <div class="caption" style="width:20vw;">
-                    <div>
-                        <h3>@property.City , @property.State</h3>
-                        <h4>@property.NeighboorHood, @property.StreetName , @property.HouseNumber</h4>
-
-                        <div style="width:100%; display: flex; justify-content: space-between; ">
-                            <span>@property.Area m&#178;</span>
-                            <span>@property.BedroomNumber quarto(s)</span>
-                            <span>@property.GarageSpace carro(s)</span>
-                        </div>
-
-                        <h4>R$ @property.Price</h4>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</a>
-    *@
