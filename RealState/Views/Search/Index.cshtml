@@ -7,10 +7,13 @@
 <h2>Pesquisa</h2>
 
 
-@{
-    Html.RenderAction("GetSearchBarPartialView", "Search");
-}
+<div style="display:flex; ">
+    @{
+        Html.RenderAction("GetDetailedSearchBarPartialView", "Search");
+    }
 
-@{
-    Html.RenderAction("GetImagePartialView", "Property", new { Property = Model });
-}
+    @{
+        Html.RenderAction("GetHorizontalImagePartialView", "Search" , new {Property = Model });
+    }
+    }
+</div>

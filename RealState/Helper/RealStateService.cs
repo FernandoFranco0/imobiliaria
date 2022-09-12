@@ -427,17 +427,20 @@ namespace RealState.Helper
                 {
                     var Query = Context.Property.AsQueryable();
 
-                    if (!String.IsNullOrEmpty(parameters.State)) 
-                        Query = Query.Where(s => s.State == parameters.State);
+                    if (!String.IsNullOrEmpty(parameters.Place)) 
+                        Query = Query.Where(s => s.State == parameters.Place || 
+                                            s.City == parameters.Place || 
+                                            s.NeighboorHood == parameters.Place || 
+                                            s.StreetName == parameters.Place);
 
-                    if (!String.IsNullOrEmpty(parameters.City))
-                        Query = Query.Where(s => s.City == parameters.City);
+                    //if (!String.IsNullOrEmpty(parameters.City))
+                    //    Query = Query.Where(s => s.City == parameters.Place);
 
-                    if (!String.IsNullOrEmpty(parameters.NeighboorHood)) 
-                        Query = Query.Where(s => s.NeighboorHood == parameters.NeighboorHood);
+                    //if (!String.IsNullOrEmpty(parameters.NeighboorHood)) 
+                    //    Query = Query.Where(s => s.NeighboorHood == parameters.Place);
 
-                    if (!String.IsNullOrEmpty(parameters.StreetName)) 
-                        Query = Query.Where(s => s.StreetName == parameters.StreetName);
+                    //if (!String.IsNullOrEmpty(parameters.StreetName)) 
+                    //    Query = Query.Where(s => s.StreetName == parameters.Place);
 
 
                     if (parameters.Area.HasValue) 
@@ -446,8 +449,13 @@ namespace RealState.Helper
                     if (parameters.Price.HasValue) 
                         Query = Query.Where(s => s.Price <= parameters.Price);
 
-                    if (parameters.BedroomNumber.HasValue) 
-                        Query = Query.Where(s => s.BedroomNumber >= parameters.BedroomNumber);
+                    if (parameters.BedroomNumber.HasValue)
+                    {
+                        if(parameters.BedroomNumber != 4)
+                            Query = Query.Where(s => s.BedroomNumber == parameters.BedroomNumber);
+                        else
+                            Query = Query.Where(s => s.BedroomNumber >= parameters.BedroomNumber);
+                    }
 
                     if (parameters.GarageSpace.HasValue) 
                         Query = Query.Where(s => s.GarageSpace >= parameters.GarageSpace);

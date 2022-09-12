@@ -13,6 +13,7 @@ namespace RealState.Controllers
         // GET: Search
         public ActionResult Index(SearchModel parameters)
         {
+
             var Property = new RealStateService.Property();
             var PropertyList = Property.List(parameters);
 
@@ -25,6 +26,21 @@ namespace RealState.Controllers
             return PartialView("_SearchBar", Search);
         }
 
-        
+        public PartialViewResult GetDetailedSearchBarPartialView()
+        {
+            var Search = new SearchModel();
+            return PartialView("_DetailedSearch", Search);
+        }
+
+        public PartialViewResult GetHorizontalImagePartialView(List<PropertyModel> Property)
+        {
+            return PartialView("_HorizontalImage", Property);
+        }
+
+        public PartialViewResult GetCarrouselPartialView(PropertyModel Property)
+        {
+            return PartialView("_Carrousel", Property);
+        }
+
     }
 }

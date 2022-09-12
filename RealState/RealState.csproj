@@ -274,6 +274,9 @@
     <Content Include="Views\Property\_IsFavoriteButton.cshtml" />
     <Content Include="Views\Property\_NotFavoriteButton.cshtml" />
     <Content Include="Views\Account\MyFavorites.cshtml" />
+    <Content Include="Views\Search\_DetailedSearch.cshtml" />
+    <Content Include="Views\Search\_HorizontalImage.cshtml" />
+    <Content Include="Views\Search\_Carrousel.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1,0 +1,110 @@
+﻿@using RealState.Models
+@model SearchModel
+
+<script>
+    function SelectButtonBedroom(number) {
+        const input = document.getElementById("BedroomInput");
+        const button = document.getElementById("bt" + number);
+        console.log(number + " " + input.value);
+        const selectedButton = document.getElementsByClassName("bedroom button-round-blue");
+
+        if (input.value != number) {
+            if (selectedButton.length != 0) {
+                selectedButton[0].classList.add("button-round-grey");
+                selectedButton[0].classList.remove("button-round-blue");
+            }
+
+            input.value = number;
+            button.classList.remove("button-round-grey")
+            button.classList.add("button-round-blue");
+          
+        }
+        else {
+            if (selectedButton.length != 0) {
+                console.log(selectedButton);
+            }
+
+            button.classList.remove("button-round-blue");
+            button.classList.add("button-round-grey");
+            input.value = "";
+            
+        }               
+    }
+    function SelectButtonGarage(number) {
+        const input = document.getElementById("GarageInput");
+        const button = document.getElementById("bt" + number);
+        console.log(number + " " + input.value);
+        const selectedButton = document.getElementsByClassName("garage button-round-blue");
+
+        if (input.value != number) {
+            if (selectedButton.length != 0) {
+                selectedButton[0].classList.add("button-round-grey");
+                selectedButton[0].classList.remove("button-round-blue");
+            }
+
+            input.value = number;
+            button.classList.remove("button-round-grey")
+            button.classList.add("button-round-blue");
+
+        }
+        else {
+            if (selectedButton.length != 0) {
+                console.log(selectedButton);
+            }
+
+            button.classList.remove("button-round-blue");
+            button.classList.add("button-round-grey");
+            input.value = "";
+
+        }
+    }
+</script>
+
+
+<div class="detailed-search">
+    @using (Html.BeginForm("Index", "Search", FormMethod.Get, new { }))
+    {
+        <div class="form-group">
+            <label for="email">Local</label>
+            @Html.TextBoxFor(m => Model.Place, new { @class = "form-control form-teste", placeholder = "Estado , cidade , bairro ou rua" })
+        </div>
+
+        <div class="price-area">
+            <div class="form-group">
+                <span class="money" readonly>R$</span>
+                <label class="price-label">Preço Máximo</label>
+                @Html.TextBoxFor(m => Model.Price, new { @class = "form-control price-input", placeholder = "Preço", maxlength = "9" })
+            </div>
+
+            <div class="form-group">
+
+                <label for="area-label">Area Minima</label>
+                <span class="area-symbol">m&#178;</span>
+                @Html.TextBoxFor(m => Model.Area, new { @class = "form-control area-input", placeholder = "Area", maxlength = "9" })
+            </div>
+        </div>
+
+        <label for="">Número de quartos</label>
+        <div style="margin-bottom: 15px;">
+            <button type="button" class="bedroom button-round-grey" id="bt1" onclick="SelectButtonBedroom(1)">1</button>
+            <button type="button" class="bedroom button-round-grey" id="bt2" onclick="SelectButtonBedroom(2)">2</button>
+            <button type="button" class="bedroom button-round-grey" id="bt3" onclick="SelectButtonBedroom(3)">3</button>
+            <button type="button" class="bedroom button-round-grey" id="bt4" onclick="SelectButtonBedroom(4)">4+</button>
+        </div>
+
+        @Html.HiddenFor(m => Model.BedroomNumber, new { id = "BedroomInput" })
+
+        <label for="">Vagas na garagem</label>
+        <div style="margin-bottom: 15px;">
+            <button type="button" class="garage button-round-grey" id="bt5" onclick="SelectButtonGarage(5)">1</button>
+            <button type="button" class="garage button-round-grey" id="bt6" onclick="SelectButtonGarage(6)">2</button>
+            <button type="button" class="garage button-round-grey" id="bt7" onclick="SelectButtonGarage(7)">3</button>
+            <button type="button" class="garage button-round-grey" id="bt8" onclick="SelectButtonGarage(8)">4+</button>
+        </div>
+
+        @Html.HiddenFor(m => Model.GarageSpace, new { id = "GarageInput" })
+
+
+        <button type="submit" class="btn btn-default">Procurar</button>
+    }
+</div>

@@ -7,28 +7,55 @@
 
 <h2>Index</h2>
 
-@{ 
-    TesteModel A = new TesteModel();
+@{
+    List<string> teste = new List<string>();
+    teste.Add("https://images.unsplash.com/photo-1517926112623-f32a800790d4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80");
+    t       este.Add("https://images.unsplash.com/photo-1504507926084-34cf0b939964?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80");
+    teste.Add("https://images.unsplash.com/photo-1517926112623-f32a800790d4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80");
 
 }
 
-@using (Html.BeginForm("Login", "Teste", FormMethod.Post))
-{
-    <h4>Baby</h4>
-    <div class="form-horizontal">
-        <div class="form-group">
-            <label class="control-label col-sm-2">Name:</label>
-            @Html.TextBoxFor(m => A.Name, new { @class = "form-control" })
-        </div>
+<div style="display:flex; ">
+    @{
+        Html.RenderAction("GetDetailedSearchBarPartialView", "Search");
+    }
 
-        <div class="form-group">
-            <label class="control-label col-sm-2">Id:</label>
-            @Html.TextBoxFor(m => A.Id, new { @class = "form-control" })
-        </div>
 
+
+    <div style="display:flex; flex-direction:column ">
+        <div class="col-md-12">
+            <div class="thumbnail" style="background-color: white;">
+                <div class="thumbnail-content">
+                    <a href="d">
+
+                        @{
+                            Html.RenderAction("GetCarrouselPartialView", "Search" , new {Urls = teste});
+                        }
+                    </a>
+                    @*pq tem que usar 2 <a>*@
+                    <a href="d">
+
+                        <div class="caption" style="width:20vw;">
+
+                            <h3>São Paulo , SP </h3>
+                            <h4>Sé, Praça da Sé , 275</h4>
+
+                            <div style="width:100%; display: flex; justify-content: space-between; ">
+                                <span> 300 m&#178;</span>
+                                <span>3 quarto(s)</span>
+                                <span>2 carro(s)</span>
+                            </div>
+
+                            <h4>R$ 200000,00</h4>
+
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="form-group">
-        <input type="submit" value="Submit" class="btn btn-default" />
-    </div>
-}
+
+
+
+</div>
