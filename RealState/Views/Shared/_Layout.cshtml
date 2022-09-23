@@ -62,6 +62,9 @@
     <div class="container body-content">
         @RenderBody()
         <hr />
+        @{
+            Html.RenderAction("GetFooterPartialView", "Home");
+        }
     </div>
 
 </body>

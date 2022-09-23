@@ -18,5 +18,10 @@ namespace RealState.Controllers
 
             return View(propertyList);
         }
+
+        public PartialViewResult GetFooterPartialView()
+        {
+            return PartialView("_Footer");
+        }
     }
 }

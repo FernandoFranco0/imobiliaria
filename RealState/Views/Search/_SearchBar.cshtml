@@ -1,31 +1,59 @@
 ﻿@using RealState.Models
 @model SearchModel
 
+<script>
 
-@using (Html.BeginForm("Index", "Search", FormMethod.Get, new { @class = "search-form" }))
-{
-    <div class="form-inline">
-        <div class="form-group search-for-options">            
-            @Html.TextBoxFor(m => Model.Place, new { @class = "form-control form-teste", placeholder = "Estado , cidade , bairro ou rua" })
-            @Html.TextBoxFor(m => Model.Price, new { @class = "form-control", placeholder = "Preço máximo" })
-            <div class="form-group">
-                <select name="BedroomNumber" class="form-control">
-                    <option value=""> Numero de quartos </option>
-                    <option value="1"> 1 </option>
-                    <option value="2"> 2 </option>
-                    <option value="3"> 3 </option>
-                    <option value="4"> 4+ </option>
-                </select>
+    $(document).ready(function () {
+        const sticky = document.querySelector('.sticky');
+        const origOffsetY = sticky.offsetTop;
+        const originLeft = sticky.offsetLeft;
+        console.log(originLeft);
+
+        console.log(origOffsetY);
+
+        function onScroll(e) {
+            console.log(window.scrollY);
+            
+            window.scrollY >= origOffsetY - 50 ? sticky.classList.add('fixed') :
+                sticky.classList.remove('fixed');
+        }
+
+        document.addEventListener('scroll', onScroll);
+    });
+
+    
+
+</script>
+
+<div class="teste">
+    <div class="filler-text"></div>
+    <div class="sticky">
+        @using (Html.BeginForm("Index", "Search", FormMethod.Get, new { @class = "search-form search-bar" }))
+        {
+            <div class="form-inline form-div">
+                <div class="form-group search-for-options">
+                    @Html.TextBoxFor(m => Model.Place, new { @class = "form-control form-teste", placeholder = "Estado , cidade , bairro ou rua" })
+                    @Html.TextBoxFor(m => Model.Price, new { @class = "form-control", placeholder = "Preço máximo" })
+                    <div class="form-group">
+                        <select name="BedroomNumber" class="form-control">
+                            <option value=""> Numero de quartos </option>
+                            <option value="1"> 1 </option>
+                            <option value="2"> 2 </option>
+                            <option value="3"> 3 </option>
+                            <option value="4"> 4+ </option>
+                        </select>
+                    </div>
+                    <input type="submit" value="Pesquisar" class="btn btn-default" />
+
+                    @*
+                        @Html.TextBoxFor(m => Model.City, new { @class = "form-control", placeholder = "Cidade" })
+                        @Html.TextBoxFor(m => Model.NeighboorHood, new { @class = "form-control", placeholder = "Bairro" })
+                        @Html.TextBoxFor(m => Model.StreetName, new { @class = "form-control", placeholder = "Rua" })
+                        @Html.TextBoxFor(m => Model.Area, new { @class = "form-control", placeholder = "Area mínima" })
+                        @Html.TextBoxFor(m => Model.GarageSpace, new { @class = "form-control", placeholder = "Espaço na garagem mínimo" })
+                    *@
+                </div>
             </div>
-            <input type="submit" value="Pesquisar" class="btn btn-default" />
-
-                @*
-                @Html.TextBoxFor(m => Model.City, new { @class = "form-control", placeholder = "Cidade" })
-                @Html.TextBoxFor(m => Model.NeighboorHood, new { @class = "form-control", placeholder = "Bairro" })
-                @Html.TextBoxFor(m => Model.StreetName, new { @class = "form-control", placeholder = "Rua" })
-                @Html.TextBoxFor(m => Model.Area, new { @class = "form-control", placeholder = "Area mínima" })
-                @Html.TextBoxFor(m => Model.GarageSpace, new { @class = "form-control", placeholder = "Espaço na garagem mínimo" })
-                *@
-        </div>
+        }
     </div>
-}
+</div>

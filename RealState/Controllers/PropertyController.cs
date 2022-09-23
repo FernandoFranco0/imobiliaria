@@ -49,6 +49,30 @@ namespace RealState.Controllers
         }
 
         [Authorize]
+        [HttpGet]
+        public ActionResult AddUpdate2()
+        {
+            var Property = new RealStateService.Property();
+            var NewProperty = new PropertyModel();
+
+
+            ClaimsIdentity identity = (ClaimsIdentity)User.Identity;
+            var claims = identity.Claims.ToList();
+
+            var UserId = Int32.Parse(claims[0].Value) ;
+
+            if (String.Equals(claims[3].Value, "1") || String.Equals(claims[0].Value, UserId.ToString()))
+            {
+
+                NewProperty.UserId = UserId;
+                return View(NewProperty);
+            }
+
+            return RedirectToAction("Index", "Home");
+        }
+
+
+        [Authorize]
         [HttpPost]
         public ActionResult Add(PropertyModel Property)
         {

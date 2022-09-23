@@ -14,9 +14,45 @@
     Html.RenderAction("GetSearchBarPartialView", "Search");
 }
 
+<div>
+    <h2 style=" text-align: center;">O maior portal de imóveis do Brasil</h2>
+    <div class="hl"></div>
+    <ul class="ul-portal">
+        <li>
+            <img class="ul-icon" src="https://cdn-icons-png.flaticon.com/512/63/63813.png" />
+            <h3>
+                Mais de 5 milhões de imóveis
+            </h3>
+            <p class="ul-text">
+                Encontrar o imóvel dos seus sonhos se torna uma experiência ainda melhor com mais de 5 milhões de opções que o Viva Real oferece.
+            </p>
+        </li>
+
+        <li>
+            <img class="ul-icon" src="https://cdn-icons-png.flaticon.com/512/63/63813.png" />
+            <h3>
+                Encontre seu imóvel perfeito
+            </h3>
+            <p class="ul-text">
+                É possível buscar seu novo lar através dos filtros de palavra-chave, características e valor total de aluguel que o Viva Real mostra para você.
+            </p>
+        </li>
+
+        <li>
+            <img class="ul-icon" src="https://cdn-icons-png.flaticon.com/512/63/63813.png" />
+            <h3>
+                Seu imóvel na palma da mão
+            </h3>
+            <p class="ul-text">
+                Quer buscar imóveis de qualquer lugar, falar com corretores, agendar visitas e ver facilidades ao redor do imóvel? Baixe o app Viva Real grátis.
+            </p>
+        </li>
+    </ul>
+</div>
 
 <p class="lead">Adicionados recentemente</p>
 
 @{
     Html.RenderAction("GetImagePartialView", "Property" , new {Property = Model });
 }
+

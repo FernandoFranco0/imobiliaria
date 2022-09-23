@@ -5,57 +5,96 @@
     ViewBag.Title = "Index";
 }
 
+
+<script type="text/javascript">
+    $(function () {
+        $("#tabs").tabs();
+    });
+
+</script>
+
+
+
 <h2>Index</h2>
 
 @{
     List<string> teste = new List<string>();
     teste.Add("https://images.unsplash.com/photo-1517926112623-f32a800790d4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80");
-    t       este.Add("https://images.unsplash.com/photo-1504507926084-34cf0b939964?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80");
+    teste.Add("https://images.unsplash.com/photo-1504507926084-34cf0b939964?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80");
     teste.Add("https://images.unsplash.com/photo-1517926112623-f32a800790d4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80");
-
+    int Quantidade = 1;
 }
 
-<div style="display:flex; ">
-    @{
-        Html.RenderAction("GetDetailedSearchBarPartialView", "Search");
-    }
 
 
+<h2>Detalhes do Imovel</h2>
 
-    <div style="display:flex; flex-direction:column ">
-        <div class="col-md-12">
-            <div class="thumbnail" style="background-color: white;">
-                <div class="thumbnail-content">
-                    <a href="d">
 
-                        @{
-                            Html.RenderAction("GetCarrouselPartialView", "Search" , new {Urls = teste});
-                        }
-                    </a>
-                    @*pq tem que usar 2 <a>*@
-                    <a href="d">
-
-                        <div class="caption" style="width:20vw;">
-
-                            <h3>São Paulo , SP </h3>
-                            <h4>Sé, Praça da Sé , 275</h4>
-
-                            <div style="width:100%; display: flex; justify-content: space-between; ">
-                                <span> 300 m&#178;</span>
-                                <span>3 quarto(s)</span>
-                                <span>2 carro(s)</span>
-                            </div>
-
-                            <h4>R$ 200000,00</h4>
-
-                        </div>
-                    </a>
-                </div>
+<div id="tabs">
+    <div style="display: flex; justify-content: center; background-color: rgb(50,50,50); ">
+        @foreach (var Url in teste)
+        {
+            <div id="tabs-@Quantidade">
+                <img src="@Url" style="max-height:50vh; " />
             </div>
-        </div>
+            Quantidade++;
+        }
     </div>
 
-
-
+    @{ Quantidade = 1; }
+    <ul>
+        @foreach (var Url in teste)
+        {
+            <li>
+                <a href="#tabs-@Quantidade">
+                    <img src="@Url" class="thumbnail" style="max-height:10vh;" />
+                </a>
+            </li>
+            Quantidade++;
+        }
+    </ul>
 
 </div>
+
+
+<div class="main-content-property">
+    <div class="property-info">
+        <h3>Model.City , Model.State </h3>
+        <h4>Model.NeighboorHood, Model.StreetName , Model.HouseNumber</h4>
+        <h4> </h4>
+        <h4>Tem uma árae de Model.Area m&#178; e possui Model.BedroomNumber quarto(s)</h4>
+        <h4>Garagem com espaço para Model.GarageSpace carro(s)</h4>
+    </div>
+    <div class="owner-info">
+        <div class="price-info">
+            <p>Compra</p>
+            <h3>R$ Model.Price</h3>
+        </div>
+        <div class="contact-info">
+            <h4>Anunciante</h4>
+            <h5>Owner.Name</h5>
+            <h5>Email para contato :  Owner.Email</h5>
+        </div>
+    </div>
+</div>
+
+
+
+@*<div>
+    <div>
+        <h3>Model.City , Model.State </h3>
+        <h3>Model.NeighboorHood, Model.StreetName , Model.HouseNumber</h3>
+    </div>
+    <div style="width: 80%; display: flex; justify-content: space-between; ">
+        <div><h3> Model.Area m&#178;</h3> </div>
+        <div><h3>Model.BedroomNumber quarto(s)</h3> </div>
+        <div><h3>Espaço na garagem Model.GarageSpace carro(s)</h3> </div>
+    </div>
+    <div>
+        <h3>R$ Model.Price</h3>
+    </div>
+
+    <div>
+        <h3>Dono : Owner.Name , Email para contato Owner.Email</h3>
+    </div>
+</div>*@
