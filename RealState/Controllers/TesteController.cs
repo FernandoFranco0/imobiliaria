@@ -15,7 +15,32 @@ namespace RealState.Controllers
         public ActionResult Teste()
         {
 
-            return View();
+            List<string> teste = new List<string>();
+            teste.Add("https://images.unsplash.com/photo-1517926112623-f32a800790d4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80");
+            teste.Add("https://images.unsplash.com/photo-1504507926084-34cf0b939964?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80");
+            teste.Add("https://images.unsplash.com/photo-1517926112623-f32a800790d4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80");
+
+            var a = new PropertyModel
+            {
+                Id = 1,
+                BedroomNumber = 23,
+                State = "alaska",
+                City = "yes",
+                NeighboorHood = "no",
+                StreetName = "maybe",
+                HouseNumber = 1,
+                Area = 100,
+                UserId = 10,
+                Price = 2000,
+                GarageSpace = 100,
+                ImagesUrl = teste
+            };
+
+
+
+
+
+            return View(a);
         }
 
         // GET: Teste

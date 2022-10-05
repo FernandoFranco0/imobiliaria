@@ -4,11 +4,9 @@
 @model PropertyModel
 
 @{
-    ViewBag.Title = "Property";
-    int Quantidade = 1;
+    ViewBag.Title = "Index";
 }
 
-<h2>Property</h2>
 
 <script type="text/javascript">
     $(function () {
@@ -58,37 +56,111 @@
     }
 
 
+
 </script>
+
+
+
+<h2>Index</h2>
+
+@{
+    List<string> teste = new List<string>();
+    teste.Add("https://images.unsplash.com/photo-1517926112623-f32a800790d4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80");
+    teste.Add("https://images.unsplash.com/photo-1504507926084-34cf0b939964?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80");
+    teste.Add("https://images.unsplash.com/photo-1517926112623-f32a800790d4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80");
+    int Quantidade = 1;
+}
+
+
 
 
 <h2>Detalhes do Imovel</h2>
 
-        
 <div id="tabs">
-
     <div style="display: flex; justify-content: center; background-color: rgb(50,50,50); ">
-        <ul id="menu" style="height: 30px; position:absolute; left:1%;">
-            <li>
-                <div class="glyphicon glyphicon-cog"></div>
-                <ul>
-                    <li>
-                        @Html.ActionLink("Apagar Foto", "RemoveImage", "Property", new { }, new { })
-                    </li>
-                </ul>
-            </li>
-        </ul>
+        @foreach (var Url in Model.ImagesUrl)
+        {
 
-        <div id="tabs-1">
-            <img src="https://images.unsplash.com/photo-1453728013993-6d66e9c9123a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" style="max-height:50vh; " />
+            <div id="tabs-@Quantidade">
+                <img src="@Url" style="max-height:50vh; " />
+            </div>
+            Quantidade++;
+        }
+    </div>
+
+    @{ Quantidade = 1; }
+    <ul>
+        @foreach (var Url in Model.ImagesUrl)
+        {
+            <li>
+                <a href="#tabs-@Quantidade">
+                    <img src="@Url" class="thumbnail" style="max-height:10vh;" />
+                </a>
+            </li>
+            Quantidade++;
+        }
+    </ul>
+
+</div>
+
+
+
+@using (Html.BeginForm("Update", "Property", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div class="form-horizontal">
+
+        @Html.HiddenFor(m => Model.Id)
+        @Html.HiddenFor(m => Model.UserId)
+        <div class="form-group">
+            <label class="control-label col-sm-2">Buscar pelo CEP:</label>
+            <div class="col-sm-3" style="padding:0;">
+                <input type="text" class="form-control" id="cepInput" />
+            </div>
+            <button type="button" onclick="searchCep()" class="btn btn-default col-sm-1">Buscar</button>
+        </div>
+
+
+        <div class="main-content-property">
+
+            <div class="property-info">
+                <div class="form-group">
+                    <label class="control-label col-sm-3">Buscar pelo CEP:</label>
+                    <div class="col-sm-5" style="padding:0;">
+                        <input type="text" class="form-control" id="cepInput" />
+                    </div>
+                    <button type="button" onclick="searchCep()" class="btn btn-default col-sm-2">Buscar</button>
+                </div>
+                <h3>
+                    @Html.TextBoxFor(m => Model.City, new { @class = "form-control special-form", @readonly = "readonly", id = "City" }) ,
+                    @Html.TextBoxFor(m => Model.State, new { @class = "form-control special-form", @readonly = "readonly", id = "State" })
+                </h3>
+                <h4>
+                    @Html.TextBoxFor(m => Model.NeighboorHood, new { @class = "form-control special-form", @readonly = "readonly", id = "NeighboorHood" }),
+                    @Html.TextBoxFor(m => Model.StreetName, new { @class = "form-control phone special-form", @readonly = "readonly", id = "StreetName" }),
+                    @Html.TextBoxFor(m => Model.HouseNumber, new { @class = "form-control special-form", id = "HouseNumber" })
+                </h4>
+                <h4> </h4>
+                <h4>Tem uma árae de @Html.TextBoxFor(m => Model.Area, new { @class = "form-control special-form" }) m&#178; e possui @Html.TextBoxFor(m => Model.BedroomNumber, new { @class = "form-control special-form" }) quarto(s)</h4>
+                <h4>Garagem com espaço para @Html.TextBoxFor(m => Model.GarageSpace, new { @class = "form-control special-form" }) carro(s)</h4>
+                <div class="form-group">
+                    <input type="submit" value="Atualizar" class="btn btn-default" />
+                </div>
+            </div>
+            <div class="owner-info">
+                <div class="price-info">
+                    <p>Compra</p>
+                    <h3>R$ @Html.TextBoxFor(m => Model.Price, new { @class = "form-control" })</h3>
+                </div>
+                <div class="contact-info">
+                    <h4>Anunciante</h4>
+                    <h5>Owner.Name</h5>
+                    <h5>Email para contato :  Owner.Email</h5>
+                </div>
+
+            </div>
         </div>
 
     </div>
 
-    <ul>
-        <li>
-            <a href="#tabs-1">
-                <img src="https://images.unsplash.com/photo-1453728013993-6d66e9c9123a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80" class="thumbnail" style="max-height:10vh;" />
-            </a>
-        </li>
-    </ul>
-</div>
+
+}
